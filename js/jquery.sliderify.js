@@ -6,10 +6,14 @@
 		navigationElementsClass : "sliderify-navigation-element",
 		buttonBackText : "Prev",
 		buttonForwardText : "Next",
-		paginationClass : "sliderify-paginator",
 		addPagination : true,
+		paginationClass : "sliderify-paginator",		
 		speed : 400,
-		easing : "swing"
+		easing : "swing",
+		transitionEffect : "slide",
+		showStatus : true,
+		statusText : " of ",
+		statusClass : "sliderify-status"
 	};
 
 	function Sliderify(container, options) {
@@ -22,7 +26,9 @@
 		this.current = 0;
 
 		this.init();
-		this.bindEvents();		
+		this.bindEvents();
+
+		this.paginator = $("." + this.config.paginationClass);		
 	};
 
 	Sliderify.prototype.init = function() {
@@ -42,30 +48,42 @@
 			class : this.config.navigationElementsClass
 		}).appendTo("." + this.config.navigationClass);
 
+		if (this.config.navigationElements === "a") {
+			$("." + this.config.navigationElementsClass).attr("href", "#");
+		};
+
 		if (this.config.addPagination) {
 			$("<div/>", {
 				class : this.config.paginationClass
 			}).appendTo(this.container);
 
-			this.addSlideButtons("." + this.config.paginationClass);
+			this.addNavigationElements();
+		};
+		
+		if (this.config.transitionEffect == "fade") {
+			this.imgs.css("opacity", 0).first().animate({
+				opacity : 1
+			}, this.config.speed);
+		}
+
+		if (this.config.showStatus) {
+			this.addStatus();
 		};
 	};
 
 	Sliderify.prototype.bindEvents = function() {
-		var self = this,
-			paginationElement = $("." + this.config.paginationClass);
+		var self = this;
 
 		$("div." + this.config.navigationClass)
 			.find(this.config.navigationElements)
 			.on("click", function(e) {
 				//Prevent multiple fast clicking.
-				if (self.list.is(":animated")) {
+				if (self.list.is(":animated") || self.imgs.is(":animated")) {
 					return false;
 				} else {
 					var dir = $(this).data('dir');
 					self.setCurrent(dir);
 					self.transition();
-					self.highlightCurrent(paginationElement);
 					e.preventDefault();
 				};
 			});
@@ -74,23 +92,58 @@
 			.find("a")
 			.on("click", function(e) {
 				//Prevent multiple fast clicking.
-				if (self.list.is(":animated")) {
+				if (self.list.is(":animated") || self.imgs.is(":animated")) {
 					return false;
 				} else {
 					var slide = $(this).data('slide');
 					self.setCurrent(null, slide);
 					self.transition();
-					self.highlightCurrent(paginationElement);
 					e.preventDefault();
 				};				
 			});
 	};
 
 	Sliderify.prototype.transition = function() {
-		this.container.find("ul").animate({
-			'margin-left' : -(this.current * this.imgWidth)
-		}, this.config.speed, this.config.easing);
-	}
+		if (this.config.transitionEffect == "slide") {
+			this.animationSlide();
+		} else if (this.config.transitionEffect == "fade") {
+			this.animationFade();
+		};
+	};
+
+	Sliderify.prototype.animationSlide = function() {
+		var self = this;
+
+		this.list.animate({
+			"margin-left" : -(this.current * this.imgWidth)
+		}, {
+			duration : this.config.speed,
+			easing : this.config.easing,
+			complete : function() {
+				self.updateStatus();
+				self.highlightCurrent();				
+			}
+		});
+	};
+
+	Sliderify.prototype.animationFade = function() {
+		var self = this;
+
+		this.list.animate({
+			"margin-left" : -(this.current * this.imgWidth)				
+		}, 0, this.config.easing);
+		
+		$(this.imgs[this.current]).animate({
+			opacity : 1
+		}, {
+			duration: this.config.speed,
+			complete : function() {
+				$(this).parent("li").siblings().children("img").css("opacity", 0);
+				self.updateStatus();
+				self.highlightCurrent();
+			}
+		});
+	};
 
 	Sliderify.prototype.setCurrent = function(direction, tinyCurrent) {
 		var pos = this.current;
@@ -99,28 +152,45 @@
 
 		if ( tinyCurrent !== undefined ) {
 			this.current = tinyCurrent;
-		}		
-	}
+		}
+	};
 
-	Sliderify.prototype.addSlideButtons = function(linksWrap) {
+	Sliderify.prototype.addNavigationElements = function() {
 		for (var i = this.imgsLength - 1; i >= 0; i--) {
 			$('<a/>', {
-					href: '#',
-					text: i + 1,
-					"data-slide" : i
-				})
-				.prependTo(linksWrap)
-				.addClass( (i === 0) ? 'active' : '' );
+				href: '#',
+				text: i + 1,
+				"data-slide" : i
+			})
+			.prependTo("." + this.config.paginationClass)
+			.addClass( (i === 0) ? 'active' : '' );
 		};
-	}
+	};
 
-	Sliderify.prototype.highlightCurrent = function(linksWrap) {
-		linksWrap
+	Sliderify.prototype.highlightCurrent = function() {
+		this.paginator
 			.find('a[data-slide="' + this.current + '"]')
 			.addClass('active')
 			.siblings()
 			.removeClass('active');
 	}
+
+	Sliderify.prototype.addStatus = function() {
+		$("<div/>", {
+			text: this.config.statusText + this.imgsLength,
+			class : this.config.statusClass
+		}).appendTo(this.container);
+
+		$("<span/>", {
+			text : this.current + 1
+		}).prependTo("." + this.config.statusClass);
+	};
+
+	Sliderify.prototype.updateStatus = function() {
+		if (this.config.showStatus) {
+			$("." + this.config.statusClass).find("span").text(this.current + 1);
+		};
+	};
 
 	$.fn.sliderify = function(options) {
 		new Sliderify(this.first(), options);
