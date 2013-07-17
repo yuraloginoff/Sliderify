@@ -7,18 +7,20 @@ You can see it in action on this [demo page](http://yuraloginoff.com/sliderify/)
 
 ## How to install
 
-1. Add CSS to the `<head>`
-
+1. Add CSS to the `<head>`:
+```
 	<link rel="stylesheet" href="css/jquery.sliderify.css">
 	<link rel="stylesheet" href="css/theme.css">
+```
 
-2. Add JavaScript before the `</body>`
-
+2. Add JavaScript before the `</body>`:
+```
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 	<script src="js/jquery.sliderify.js"></script>
 	<script>
 		$(".slider").sliderify();
 	</script>
+```
 
 ## Markup
 
@@ -34,10 +36,9 @@ The following type of markup structure is needed to make the plugin work:
 ## CSS
 Sliderify plugin is provided with 2 css files: `jquery.sliderify.css` and `theme.css`. You can edit `theme.css` to change default styling. `jquery.sliderify.css` contains some kind of plugin's core so edit it at your own risk.
 
-You should specify image container width. It equals images width.
-	.slider { width: 500px; }
+You should specify image container width: `.slider { width: 500px; }`
 
-You can redefine CSS class names. See below.
+Also you can redefine CSS class names. See below.
 
 
 ## JavaScript
@@ -46,7 +47,7 @@ Running this script will apply the Sliderify plugin DOM element with a .slider c
 $(".slider").sliderify();
 ```
 
-You can pass an object to sliderify function to redefine default settings. F.i.:
+You can pass an object to sliderify function to redefine default settings, f.i.:
 ```javascript
 $(".slider").sliderify({
 	speed : 500,
@@ -76,7 +77,7 @@ statusClass | "sliderify-status" | CSS class of status element.
 ## Credits
 Initially written by [Yura Loginov](http://yuraloginoff.com).
 
-If you have any quetion about this plugin please contact me on twitter - [@yuraloginoff](https://twitter.com/yuraloginoff)
+If you have any questions about this plugin please contact me on twitter - [@yuraloginoff](https://twitter.com/yuraloginoff)
 
 ## Legal
 
