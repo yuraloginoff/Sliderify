@@ -1,5 +1,5 @@
-.slider { overflow: hidden; }
+#slider { overflow: hidden; }
 
-.slider ul { width: 100000px; list-style: none; }
+#slider ul { width: 100000px; list-style: none; }
 
-.slider ul li {	float: left; }
+#slider ul li {	float: left; }

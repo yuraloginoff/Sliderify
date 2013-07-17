@@ -6,7 +6,7 @@
 	line-height: 1;
 }
 
-.slider {
+#slider {
 	width: 500px; /* image width*/
 	margin: 10px auto 0;
 	position: relative;
