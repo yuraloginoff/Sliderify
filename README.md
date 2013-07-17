@@ -12,7 +12,7 @@ You can see it in action on this [demo page](http://yuraloginoff.com/sliderify/)
 	<link rel="stylesheet" href="css/jquery.sliderify.css">
 	<link rel="stylesheet" href="css/theme.css">
 
-2. Add JavaScript before the "</body>"
+2. Add JavaScript before the `</body>`
 
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 	<script src="js/jquery.sliderify.js"></script>
